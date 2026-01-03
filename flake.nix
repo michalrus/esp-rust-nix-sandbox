@@ -6,6 +6,10 @@
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    devshell = {
+      url = "github:numtide/devshell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs: let
@@ -13,6 +17,7 @@
   in
     inputs.flake-parts.lib.mkFlake {inherit inputs;} ({config, ...}: {
       imports = [
+        inputs.devshell.flakeModule
         inputs.treefmt-nix.flakeModule
       ];
 
@@ -27,8 +32,13 @@
         system,
         pkgs,
         ...
-      }: {
-        packages = import ./nix/unsafe-bin.nix {inherit pkgs;};
+      }: rec {
+        imports = [
+          ./nix/unsafe-bin.nix
+          ./nix/safe-bwrap.nix
+          ./nix/help.nix
+          ./nix/devshell.nix
+        ];
 
         treefmt = {pkgs, ...}: {
           projectRootFile = "flake.nix";

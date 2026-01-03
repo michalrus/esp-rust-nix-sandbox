@@ -1,6 +1,10 @@
-{pkgs}: let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   inherit (pkgs.stdenv.hostPlatform) system;
-  inherit (pkgs) lib;
 
   rust = let
     version = "${pkgs.rustc.version}.0";
@@ -137,10 +141,12 @@
         '';
       });
 in {
-  esp-rust-src = rust-src;
-  unsafe-bin-esp-rust = rust;
-  unsafe-bin-esp-gcc-xtensa = esp-gcc.xtensa;
-  unsafe-bin-esp-gcc-riscv32 = esp-gcc.riscv32;
-  unsafe-bin-esp-gdb-xtensa = esp-gdb.xtensa;
-  unsafe-bin-esp-gdb-riscv32 = esp-gdb.riscv32;
+  packages = {
+    esp-rust-src = rust-src;
+    unsafe-bin-esp-rust = rust;
+    unsafe-bin-esp-gcc-xtensa = esp-gcc.xtensa;
+    unsafe-bin-esp-gcc-riscv32 = esp-gcc.riscv32;
+    unsafe-bin-esp-gdb-xtensa = esp-gdb.xtensa;
+    unsafe-bin-esp-gdb-riscv32 = esp-gdb.riscv32;
+  };
 }
