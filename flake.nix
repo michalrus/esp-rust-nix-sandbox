@@ -23,10 +23,12 @@
         "x86_64-darwin"
       ];
 
-      perSystem = {pkgs, ...}: {
-        packages = {
-          inherit (pkgs) hello;
-        };
+      perSystem = {
+        system,
+        pkgs,
+        ...
+      }: {
+        packages = import ./nix/unsafe-bin.nix {inherit pkgs;};
 
         treefmt = {pkgs, ...}: {
           projectRootFile = "flake.nix";
