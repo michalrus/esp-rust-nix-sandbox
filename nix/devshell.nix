@@ -8,7 +8,7 @@
     inherit (config) packages;
   in
     {config, ...}: {
-      name = "rust-esp32-devshell";
+      name = "esp-rust-nix-sandbox-devshell";
 
       commands = [
         {package = packages.help-bwrap;}
