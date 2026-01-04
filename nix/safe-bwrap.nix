@@ -37,13 +37,12 @@
     };
 
     bwrap-cargo = pkgs.cargo.overrideAttrs (old: {
+      # Don’t force the non-forked compiler onto Cargo’s `PATH`:
       postInstall =
         old.postInstall
         + ''
-          sed -r 's#'\'''${old.passthru.rustc}/bin'\'''#"$(dirname "$RUSTC")"#g' -i $out/bin/cargo
+          sed -r 's#${old.passthru.rustc}#${pkgs.emptyDirectory}#g' -i $out/bin/cargo
         '';
-      # FIXME: correct that to a specific bwrap-rust once it works
-      #sed -r 's#${old.passthru.rustc}#${config.packages.bwrap-rustc}#g' -i $out/bin/cargo
     });
   };
 }
