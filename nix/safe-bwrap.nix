@@ -7,11 +7,43 @@
   packages = {
     bwrap-rustc = pkgs.writeShellApplication {
       name = "rustc";
-      meta.description = "pre-built Rust compiler fork for ESP32 (xtensa, riscv32) in a Bubblewrap sandbox";
+      meta.description = "Pre-built Rust compiler fork for ESP32 (xtensa, riscv32) in a Bubblewrap sandbox";
       text = ''
-        echo TODO: unimplemented
-        exit 1
+        mkdir -p "$PRJ_ROOT/target/tmp"
+        bwrap_opts=(
+          --unshare-all
+          --die-with-parent
+          --proc /proc
+          --dev /dev
+          --clearenv
+          --setenv PATH ${lib.makeBinPath [
+          config.packages.unsafe-bin-esp-gcc-xtensa
+          config.packages.unsafe-bin-esp-gcc-riscv32
+          pkgs.stdenv.cc # needed for `build.rs` scripts which run on the host
+        ]}
+          --ro-bind /nix/store /nix/store
+          --bind "$PRJ_ROOT" "$PRJ_ROOT"
+          --bind "$PRJ_ROOT/target/tmp" /tmp
+        )
+        for k in $(env | cut -d= -f1); do
+          case "$k" in
+            CARGO|CARGO_*|ESP_*|OUT_DIR)
+              bwrap_opts+=(--setenv "$k" "''${!k}")
+              ;;
+          esac
+        done
+        exec bwrap "''${bwrap_opts[@]}" -- ${config.packages.unsafe-bin-esp-rust}/bin/rustc "$@"
       '';
     };
+
+    bwrap-cargo = pkgs.cargo.overrideAttrs (old: {
+      postInstall =
+        old.postInstall
+        + ''
+          sed -r 's#'\'''${old.passthru.rustc}/bin'\'''#"$(dirname "$RUSTC")"#g' -i $out/bin/cargo
+        '';
+      # FIXME: correct that to a specific bwrap-rust once it works
+      #sed -r 's#${old.passthru.rustc}#${config.packages.bwrap-rustc}#g' -i $out/bin/cargo
+    });
   };
 }

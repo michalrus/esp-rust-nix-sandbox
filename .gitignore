@@ -3,5 +3,6 @@
 *.log
 tmp/
 result
+target/
 flycheck_*
 .direnv/

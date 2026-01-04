@@ -36,6 +36,8 @@
       installPhase = ''
         mkdir -p $out
         ./install.sh --destdir=$out --prefix= --disable-ldconfig --without=rust-docs-json-preview,rust-docs
+        chmod -R +w $out
+        ln -s ${rust-src}/lib/rustlib/src $out/lib/rustlib/src
       '';
     };
 

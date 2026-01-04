@@ -44,6 +44,9 @@
           projectRootFile = "flake.nix";
           programs = {
             alejandra.enable = true; # Nix
+            rustfmt.enable = true;
+            shfmt.enable = true;
+            taplo.enable = true; # TOML
           };
         };
       };

@@ -10,7 +10,7 @@
     pkgs.writeShellApplication {
       inherit name;
       meta = {
-        description = "how to set up Bubblewrap on NixOS";
+        description = "Shows how to set up Bubblewrap on NixOS";
         longDescription = ''
           Untrusted binary blobs (pre-built Rust and GCC compilers) are run in a
           Bubblewrap ({bold}bwrap{reset}) sandbox. Set it up yourself (see {bold}${name}{reset}), because
