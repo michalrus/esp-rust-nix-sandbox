@@ -34,6 +34,10 @@
           name = "RUST_SRC_PATH";
           value = "${packages.esp-rust-src}/lib/rustlib/src/rust/library";
         }
+        {
+          name = "ESPFLASH_SKIP_UPDATE_CHECK";
+          value = "true";
+        }
       ];
 
       devshell = {
