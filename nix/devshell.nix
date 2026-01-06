@@ -17,6 +17,7 @@
         {package = pkgs.rust-analyzer;}
         {package = pkgs.clippy;}
         {package = pkgs.espflash;}
+        {package = pkgs.picocom;}
       ];
 
       env = [
@@ -65,6 +66,7 @@
           To flash, and monitor output:
             • {bold}cargo espflash flash --monitor --features esp32 --target xtensa-esp32-none-elf --release{reset}
             • {bold}cargo run --release{reset} (alias of ^)
+            • {bold}picocom --baud=115200 --imap lfcrlf /dev/ttyUSB0{reset}
         '';
 
         startup.verify-bwrap.text = lib.getExe packages.verify-bwrap;
