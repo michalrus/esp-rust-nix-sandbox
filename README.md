@@ -2,13 +2,15 @@
 
 Nix devshell for Rust on ESP/ESP32. Pre-built compiler runs in a strict [Bubblewrap](https://github.com/containers/bubblewrap) sandbox.
 
+Supports Xtensa (ESP32) and RISC-V 32-bit (ESP32-C3 / ESP32-C2 / ESP32-C6 / ESP32-H2 / …).
+
 ## Rationale
 
 The ESP Rust toolchain story is a bit unusual, because the Xtensa architecture support is not yet available in the mainline Rust:
 * The [`esp-rs/rust`](https://github.com/esp-rs/rust) fork ships pre-built `rustc`/`rustdoc` binaries.
 * It’s similar with Espressif ESP GCC toolchain.
 * Those binaries are big, powerful, and hard to audit.
-* At the same time, fully rebuilding the forked compiler from source in every project is slow, fragile, and requires lots of RAM.
+* At the same time, fully rebuilding the forked compiler from source in every project is slow, fragile, and requires lots of RAM. Not to mention reading the actual changes made to mainline Rust.
 
 So this repo aims for a pragmatic middle ground:
 * Treat pre-built compilers as untrusted binary blobs.
