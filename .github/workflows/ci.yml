@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+
+permissions:
+  contents: read
+
+jobs:
+  treefmt:
+    runs-on: [self-hosted, monstrum]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - run: nix build -L --no-link .#checks.x86_64-linux.treefmt
+
+  nixlint:
+    runs-on: [self-hosted, monstrum]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - run: nix build -L --no-link .#checks.x86_64-linux.nixlint
+
+  devshell:
+    needs: [treefmt, nixlint]
+    runs-on: [self-hosted, monstrum]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - run: nix build -L --no-link --keep-going .#devShells.x86_64-linux.default

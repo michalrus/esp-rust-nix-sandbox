@@ -38,6 +38,26 @@
         "type": "github"
       }
     },
+    "nixlint": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1791030844,
+        "narHash": "sha256-AdpyrAaNr3v94oZ4yaeCi3FEY3kbTxGglIsHSA48nCM=",
+        "owner": "michalrus",
+        "repo": "nixlint",
+        "rev": "eab68607949d18ffbfd18f6c96a23f680c0de026",
+        "type": "github"
+      },
+      "original": {
+        "owner": "michalrus",
+        "repo": "nixlint",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1765762245,
@@ -73,6 +93,7 @@
       "inputs": {
         "devshell": "devshell",
         "flake-parts": "flake-parts",
+        "nixlint": "nixlint",
         "nixpkgs": "nixpkgs",
         "treefmt-nix": "treefmt-nix"
       }

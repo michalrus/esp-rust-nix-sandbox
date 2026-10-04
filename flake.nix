@@ -10,12 +10,14 @@
       url = "github:numtide/devshell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nixlint = {
+      url = "github:michalrus/nixlint";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = inputs: let
-    inherit (inputs.nixpkgs) lib;
-  in
-    inputs.flake-parts.lib.mkFlake {inherit inputs;} ({config, ...}: {
+  outputs = inputs:
+    inputs.flake-parts.lib.mkFlake {inherit inputs;} {
       imports = [
         inputs.devshell.flakeModule
         inputs.treefmt-nix.flakeModule
@@ -31,7 +33,7 @@
         system,
         pkgs,
         ...
-      }: rec {
+      }: {
         imports = [
           ./nix/unsafe-bin.nix
           ./nix/safe-bwrap.nix
@@ -39,15 +41,22 @@
           ./nix/devshell.nix
         ];
 
-        treefmt = {pkgs, ...}: {
+        treefmt = {
           projectRootFile = "flake.nix";
           programs = {
             alejandra.enable = true; # Nix
             rustfmt.enable = true;
             shfmt.enable = true;
             taplo.enable = true; # TOML
+            yamlfmt.enable = true;
           };
         };
+
+        checks.nixlint = pkgs.runCommand "nixlint" {nativeBuildInputs = [inputs.nixlint.packages.${system}.nixlint];} ''
+          cd ${inputs.self}
+          nixlint .
+          touch $out
+        '';
       };
-    });
+    };
 }
