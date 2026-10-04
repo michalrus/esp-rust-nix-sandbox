@@ -45,6 +45,7 @@
           projectRootFile = "flake.nix";
           programs = {
             alejandra.enable = true; # Nix
+            prettier.enable = true; # Markdown
             rustfmt.enable = true;
             shfmt.enable = true;
             taplo.enable = true; # TOML

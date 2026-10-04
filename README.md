@@ -7,25 +7,27 @@ Supports Xtensa (ESP32) and RISC-V 32-bit (ESP32-C3 / ESP32-C2 / ESP32-C6 / ESP3
 ## Rationale
 
 The ESP Rust toolchain story is a bit unusual, because the Xtensa architecture support is not yet available in the mainline Rust:
-* The [`esp-rs/rust`](https://github.com/esp-rs/rust) fork ships pre-built `rustc`/`rustdoc` binaries.
-* It’s similar with Espressif ESP GCC toolchain.
-* Those binaries are big, powerful, and hard to audit.
-* At the same time, fully rebuilding the forked compiler from source in every project is slow, fragile, and requires lots of RAM. Not to mention reading the actual changes made to mainline Rust.
+
+- The [`esp-rs/rust`](https://github.com/esp-rs/rust) fork ships pre-built `rustc`/`rustdoc` binaries.
+- It’s similar with Espressif ESP GCC toolchain.
+- Those binaries are big, powerful, and hard to audit.
+- At the same time, fully rebuilding the forked compiler from source in every project is slow, fragile, and requires lots of RAM. Not to mention reading the actual changes made to mainline Rust.
 
 So this repo aims for a pragmatic middle ground:
-* Treat pre-built compilers as untrusted binary blobs.
-* Constrain them heavily so they can only see:
-  * their own Nix store closure (read-only), and
-  * `$PRJ_ROOT` (your devshell root).
-* Remove ambient authority:
-  * no inherited environment,
-  * no access to your home directory, SSH keys, GnuPG, etc.,
-  * no network access,
-  * no random host filesystem access,
-  * `CARGO_HOME` is separate and lives inside `$PRJ_ROOT`, so dependency state is project-local and doesn’t leak into global caches.
-* Everything else is kept “normal” and reproducible: Cargo, `espflash`, `rustfmt`, `clippy`, etc. come from Nixpkgs and are built from source (and run outside the sandbox).
 
-We use [Bubblewrap](https://github.com/containers/bubblewrap) for this which is a “low-level unprivileged sandboxing tool used by Flatpak and similar projects.” 
+- Treat pre-built compilers as untrusted binary blobs.
+- Constrain them heavily so they can only see:
+  - their own Nix store closure (read-only), and
+  - `$PRJ_ROOT` (your devshell root).
+- Remove ambient authority:
+  - no inherited environment,
+  - no access to your home directory, SSH keys, GnuPG, etc.,
+  - no network access,
+  - no random host filesystem access,
+  - `CARGO_HOME` is separate and lives inside `$PRJ_ROOT`, so dependency state is project-local and doesn’t leak into global caches.
+- Everything else is kept “normal” and reproducible: Cargo, `espflash`, `rustfmt`, `clippy`, etc. come from Nixpkgs and are built from source (and run outside the sandbox).
+
+We use [Bubblewrap](https://github.com/containers/bubblewrap) for this which is a “low-level unprivileged sandboxing tool used by Flatpak and similar projects.”
 
 In effect: you can use the convenient upstream pre-builts for `rustc`/`rustdoc` (and the ESP GCC/GDB toolchain), without giving them almost any access to your machine.
 
